@@ -1,0 +1,108 @@
+package br.com.cpg.moviesproject.model.bean;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
+public class MovieBean implements Parcelable {
+
+    private String title;
+
+    @SerializedName("poster_path")
+    private String posterPath;
+
+    private String overview;
+
+    @SerializedName("vote_average")
+    private Double voteAverage;
+
+    @SerializedName("release_date")
+    private String releaseDate;
+
+    @SuppressWarnings("unused")
+    public MovieBean() {
+
+    }
+
+    private MovieBean(Parcel parcel) {
+        title = parcel.readString();
+        posterPath = parcel.readString();
+        overview = parcel.readString();
+        voteAverage = parcel.readDouble();
+        releaseDate = parcel.readString();
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    @SuppressWarnings("unused")
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    @SuppressWarnings("unused")
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    @SuppressWarnings("unused")
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public Double getVoteAverage() {
+        return voteAverage;
+    }
+
+    @SuppressWarnings("unused")
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    @SuppressWarnings("unused")
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(posterPath);
+        parcel.writeString(overview);
+        parcel.writeDouble(voteAverage);
+        parcel.writeString(releaseDate);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Creator<MovieBean> CREATOR = new Creator<MovieBean>() {
+        @Override
+        public MovieBean createFromParcel(Parcel in) {
+            return new MovieBean(in);
+        }
+
+        @Override
+        public MovieBean[] newArray(int size) {
+            return new MovieBean[size];
+        }
+    };
+}
