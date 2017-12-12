@@ -46,6 +46,7 @@ import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
  */
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
     private static final String STATE_MOVIES_LIST = "STATE_MOVIES_LIST";
+    private static final String STATE_MOVIES_LIST_STATE = "STATE_MOVIES_LIST_STATE";
     private RecyclerView mMoviesGrid;
     private TextView mErrorMessage;
     private ProgressBar mLoading;
@@ -63,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_MOVIES_LIST)) {
             List<MovieBean> moviesList = savedInstanceState.getParcelableArrayList(STATE_MOVIES_LIST);
             mAdapter.setMoviesData(moviesList);
+
+            if(savedInstanceState.containsKey(STATE_MOVIES_LIST_STATE)) {
+                Parcelable state = savedInstanceState.getParcelable(STATE_MOVIES_LIST_STATE);
+                mMoviesGrid.getLayoutManager().onRestoreInstanceState(state);
+            }
         } else {
             loadMoviesData(TheMovieDBBO.MoviesSortOrder.POPULAR);
         }
@@ -93,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MOVIES_LIST, new ArrayList<Parcelable>(mAdapter.getItems()));
+        outState.putParcelable(STATE_MOVIES_LIST_STATE, mMoviesGrid.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
@@ -213,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             if (moviesBean != null && moviesBean.getMoviesList() != null && !moviesBean.getMoviesList().isEmpty()) {
                 mActivity.get().toSuccessState();
                 mActivity.get().mAdapter.setMoviesData(moviesBean.getMoviesList());
+                mActivity.get().mMoviesGrid.scrollToPosition(0);
             } else {
                 mActivity.get().toErrorState();
             }
