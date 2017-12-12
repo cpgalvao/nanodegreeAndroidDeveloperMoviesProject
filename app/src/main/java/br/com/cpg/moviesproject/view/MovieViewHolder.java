@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso;
 
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
-import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
+import br.com.cpg.moviesproject.utils.ImageUtils;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private final ImageView mMoviePoster;
@@ -28,24 +28,16 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
         Context context = mMoviePoster.getContext();
 
         Picasso.with(context).cancelRequest(mMoviePoster);
-
-        TheMovieDBBO bo = new TheMovieDBBO();
-        String posterUrl = bo.mountPosterUrl(movieBean.getPosterPath());
-        int imageWidth = mMoviePoster.getResources().getDisplayMetrics().widthPixels / 2;
-
-        Picasso.with(context)
-                .load(posterUrl)
-                .placeholder(android.R.drawable.ic_menu_gallery)
-                .resize(imageWidth, 0)
-                .into(mMoviePoster);
+        String posterPath = movieBean.getPosterPath();
+        ImageUtils.loadMoviePoster(context, posterPath, mMoviePoster);
     }
 
     @Override
     public void onClick(View view) {
-        mClickListener.onClick(getAdapterPosition());
+        mClickListener.onClick(getAdapterPosition(), mMoviePoster);
     }
 
     public interface OnItemClickListener {
-        void onClick(int position);
+        void onClick(int position, ImageView sharedImageView);
     }
 }

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,11 +58,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> impleme
     }
 
     @Override
-    public void onClick(int position) {
-        mClickHandler.onClick(mMoviesData.get(position));
+    public void onClick(int position, ImageView sharedImageView) {
+        mClickHandler.onClick(mMoviesData.get(position), sharedImageView);
     }
 
     public interface OnMovieClickHandler {
-        void onClick(MovieBean movieBean);
+        void onClick(MovieBean movieBean, ImageView sharedImageView);
     }
 }

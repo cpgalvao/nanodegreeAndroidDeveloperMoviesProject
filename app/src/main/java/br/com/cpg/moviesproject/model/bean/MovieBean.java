@@ -15,7 +15,7 @@ public class MovieBean implements Parcelable {
     private String overview;
 
     @SerializedName("vote_average")
-    private Double voteAverage;
+    private Double userRating;
 
     @SerializedName("release_date")
     private String releaseDate;
@@ -29,7 +29,7 @@ public class MovieBean implements Parcelable {
         title = parcel.readString();
         posterPath = parcel.readString();
         overview = parcel.readString();
-        voteAverage = parcel.readDouble();
+        userRating = parcel.readDouble();
         releaseDate = parcel.readString();
     }
 
@@ -61,13 +61,13 @@ public class MovieBean implements Parcelable {
         this.overview = overview;
     }
 
-    public Double getVoteAverage() {
-        return voteAverage;
+    public Double getUserRating() {
+        return userRating;
     }
 
     @SuppressWarnings("unused")
-    public void setVoteAverage(Double voteAverage) {
-        this.voteAverage = voteAverage;
+    public void setUserRating(Double userRating) {
+        this.userRating = userRating;
     }
 
     public String getReleaseDate() {
@@ -89,7 +89,7 @@ public class MovieBean implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(posterPath);
         parcel.writeString(overview);
-        parcel.writeDouble(voteAverage);
+        parcel.writeDouble(userRating);
         parcel.writeString(releaseDate);
     }
 

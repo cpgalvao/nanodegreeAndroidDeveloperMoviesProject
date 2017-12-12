@@ -3,9 +3,11 @@ package br.com.cpg.moviesproject.view;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -34,10 +37,12 @@ import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
  * Loading/Error message - OK
  * Menu - sort order - OK
  * Click - OK
- * Layout detail
- * Rotation
- * Remove api key
- * Lint
+ * Layout detail - OK
+ * Rotation - OK
+ * Share - OK
+ * Animation - OK
+ * Lint - OK
+ * Remove api key - OK
  */
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
     private static final String STATE_MOVIES_LIST = "STATE_MOVIES_LIST";
@@ -91,10 +96,21 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
     }
 
     @Override
-    public void onClick(MovieBean movieBean) {
+    public void onClick(MovieBean movieBean, ImageView sharedImageView) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE_DATA, movieBean);
-        startActivity(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sharedImageView.setTransitionName(DetailActivity.TRANSITION_NAME);
+            intent.putExtra(DetailActivity.TRANSITION_NAME, ViewCompat.getTransitionName(sharedImageView));
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this,
+                    sharedImageView,
+                    ViewCompat.getTransitionName(sharedImageView));
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
     }
 
     private void loadMoviesData(TheMovieDBBO.MoviesSortOrder sortOrder) {
@@ -114,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
 
         int spanCount = 2;
 
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = 3;
         }
 
