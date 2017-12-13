@@ -1,8 +1,10 @@
 package br.com.cpg.moviesproject.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,12 +21,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.cpg.moviesproject.R;
+import br.com.cpg.moviesproject.controller.LoadMoviesTask;
 import br.com.cpg.moviesproject.controller.MoviesAdapter;
+import br.com.cpg.moviesproject.controller.TaskCompleteListener;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             List<MovieBean> moviesList = savedInstanceState.getParcelableArrayList(STATE_MOVIES_LIST);
             mAdapter.setMoviesData(moviesList);
 
-            if(savedInstanceState.containsKey(STATE_MOVIES_LIST_STATE)) {
+            if (savedInstanceState.containsKey(STATE_MOVIES_LIST_STATE)) {
                 Parcelable state = savedInstanceState.getParcelable(STATE_MOVIES_LIST_STATE);
                 mMoviesGrid.getLayoutManager().onRestoreInstanceState(state);
             }
@@ -126,8 +129,25 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             mLoadMoviesTask = null;
         }
 
-        mLoadMoviesTask = new LoadMoviesTask(this);
-        mLoadMoviesTask.execute(sortOrder);
+        if (verifyNetworkConnection()) {
+            toLoadingState();
+            mLoadMoviesTask = new LoadMoviesTask(new LoadMoviesCompleteListener());
+            mLoadMoviesTask.execute(sortOrder);
+        } else {
+            toErrorState();
+        }
+    }
+
+    private boolean verifyNetworkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isConnected = false;
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        }
+
+        return isConnected;
     }
 
     private void setupUI() {
@@ -173,56 +193,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
         mMoviesGrid.setVisibility(View.VISIBLE);
     }
 
-    private static class LoadMoviesTask extends AsyncTask<Object, Void, MoviesBean> {
-        private final WeakReference<MainActivity> mActivity;
-
-        private LoadMoviesTask(MainActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
+    private class LoadMoviesCompleteListener implements TaskCompleteListener<MoviesBean> {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mActivity.get().toLoadingState();
-        }
-
-        @Override
-        protected MoviesBean doInBackground(Object... params) {
-            if (params.length == 0) {
-                return null;
-            }
-
-            MoviesBean moviesBean;
-
-            TheMovieDBBO.MoviesSortOrder sortOrder = (TheMovieDBBO.MoviesSortOrder) params[0];
-
-            TheMovieDBBO bo = new TheMovieDBBO();
-
-            String apiKey = mActivity.get().getString(R.string.the_movie_db_api_key);
-
-            switch (sortOrder) {
-                case TOP_RATED:
-                    moviesBean = bo.getTopRatedMoviesList(apiKey);
-                    break;
-                case POPULAR:
-                default:
-                    moviesBean = bo.getPopularMoviesList(apiKey);
-                    break;
-
-            }
-
-            return moviesBean;
-        }
-
-        @Override
-        protected void onPostExecute(MoviesBean moviesBean) {
-            super.onPostExecute(moviesBean);
+        public void onTaskComplete(MoviesBean moviesBean) {
             if (moviesBean != null && moviesBean.getMoviesList() != null && !moviesBean.getMoviesList().isEmpty()) {
-                mActivity.get().toSuccessState();
-                mActivity.get().mAdapter.setMoviesData(moviesBean.getMoviesList());
-                mActivity.get().mMoviesGrid.scrollToPosition(0);
+                MainActivity.this.toSuccessState();
+                MainActivity.this.mAdapter.setMoviesData(moviesBean.getMoviesList());
+                MainActivity.this.mMoviesGrid.scrollToPosition(0);
             } else {
-                mActivity.get().toErrorState();
+                MainActivity.this.toErrorState();
             }
         }
     }
