@@ -1,4 +1,4 @@
-package br.com.cpg.moviesproject.view;
+package br.com.cpg.moviesproject.view.viewholder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

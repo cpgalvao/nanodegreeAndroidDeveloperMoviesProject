@@ -3,9 +3,7 @@ package br.com.cpg.moviesproject.model.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
-public class TrailerBean implements Parcelable {
+public class TrailerBean implements Parcelable, DetailsInterface {
 
     private String name;
 

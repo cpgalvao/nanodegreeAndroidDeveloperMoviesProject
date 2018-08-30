@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-public class MovieBean implements Parcelable {
+public class MovieBean implements Parcelable, DetailsInterface {
 
     private int id;
 

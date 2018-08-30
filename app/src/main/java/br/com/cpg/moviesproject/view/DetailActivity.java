@@ -1,39 +1,43 @@
 package br.com.cpg.moviesproject.view;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.TransitionInflater;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.cpg.moviesproject.R;
-import br.com.cpg.moviesproject.controller.LoadMoviesTask;
-import br.com.cpg.moviesproject.controller.LoadTrailersTask;
-import br.com.cpg.moviesproject.controller.TaskCompleteListener;
+import br.com.cpg.moviesproject.controller.DetailsAdapter;
+import br.com.cpg.moviesproject.model.bean.DetailsInterface;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
-import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.bean.TrailersBean;
-import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
-import br.com.cpg.moviesproject.utils.DateUtils;
-import br.com.cpg.moviesproject.utils.ImageUtils;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
+import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModel;
+import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
 
 /**
  * Load trailers - OK
- * Change Details UI
- * Adapter
+ * Change Details UI - OK
+ * Adapter - OK
  * Trailers UI
  * Play trailer
  * Load comments
  * Comments UI
  * Favorite
  * Create database/room
+ * Animation
  * Rotation
  * Change share - first trailer
  * Lint
@@ -45,12 +49,11 @@ public class DetailActivity extends AppCompatActivity {
     public static final String TRANSITION_NAME = "POSTER_TRANSITION";
     private MovieBean mMovieData;
 
-    private TextView mTitle;
-    private ImageView mPoster;
-    private TextView mReleaseDate;
-    private TextView mRating;
-    private TextView mOverview;
-    private LoadTrailersTask mLoadTrailersTask;
+    private RecyclerView mDetailsList;
+    private TextView mErrorMessage;
+    private ProgressBar mLoading;
+
+    private DetailsAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +67,29 @@ public class DetailActivity extends AppCompatActivity {
 
         setupUI();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(R.transition.shared_element_transition));
-            mPoster.setTransitionName(TRANSITION_NAME);
-        }
+        toLoadingState();
 
-        fillData();
         if (mMovieData != null) {
-            loadTrailersData(mMovieData.getId());
+            List<DetailsInterface> data = new ArrayList<>();
+            data.add(mMovieData);
+            mAdapter.setDetailsData(data);
+
+            toSuccessState();
+
+            if (NetworkUtils.verifyNetworkConnection(this)) {
+                DetailsMovieViewModelFactory factory = new DetailsMovieViewModelFactory(mMovieData);
+                final DetailsMovieViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailsMovieViewModel.class);
+                viewModel.getTrailers().observe(this, new Observer<TrailersBean>() {
+                    @Override
+                    public void onChanged(@Nullable TrailersBean trailersBean) {
+                        if (trailersBean != null && trailersBean.getTrailerList() != null && !trailersBean.getTrailerList().isEmpty()) {
+                          //  mAdapter.setDetailsData(viewModel.getDetailsData());
+                        }
+                    }
+                });
+            }
+        } else {
+            toErrorState();
         }
     }
 
@@ -98,49 +116,35 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupUI() {
-        mTitle = findViewById(R.id.tv_movie_title);
-        mPoster = findViewById(R.id.iv_movie_poster);
-        mReleaseDate = findViewById(R.id.tv_movie_release_date);
-        mOverview = findViewById(R.id.tv_movie_overview);
-        mRating = findViewById(R.id.tv_movie_rating);
+        mDetailsList = findViewById(R.id.rv_details_list);
+        mErrorMessage = findViewById(R.id.tv_details_error_message);
+        mLoading = findViewById(R.id.pb_details_loading);
+
+        mAdapter = new DetailsAdapter();
+        mDetailsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mDetailsList.setAdapter(mAdapter);
+
+        toSuccessState();
     }
 
-    private void fillData() {
-        if (mMovieData != null) {
-            mTitle.setText(mMovieData.getTitle());
-            String releaseYear = DateUtils.getYear(mMovieData.getReleaseDate());
-            mReleaseDate.setText(releaseYear);
-            mOverview.setText(mMovieData.getOverview());
-            String rating = String.format(getString(R.string.rating), mMovieData.getUserRating().toString());
-            mRating.setText(rating);
+    private void toLoadingState() {
+        mErrorMessage.setVisibility(View.INVISIBLE);
+        mDetailsList.setVisibility(View.INVISIBLE);
 
-            String posterPath = mMovieData.getPosterPath();
-            ImageUtils.loadMoviePosterDetail(this, posterPath, mPoster);
-        }
+        mLoading.setVisibility(View.VISIBLE);
     }
 
-    private void loadTrailersData(int movieId) {
-        if (mLoadTrailersTask != null) {
-            mLoadTrailersTask.cancel(true);
-            mLoadTrailersTask = null;
-        }
+    private void toErrorState() {
+        mDetailsList.setVisibility(View.INVISIBLE);
+        mLoading.setVisibility(View.INVISIBLE);
 
-        if (NetworkUtils.verifyNetworkConnection(this)) {
-            mLoadTrailersTask = new LoadTrailersTask(new LoadTrailersCompleteListener());
-            mLoadTrailersTask.execute(movieId);
-        } else {
-            Log.e(TAG, "Error loading trailers");
-        }
+        mErrorMessage.setVisibility(View.VISIBLE);
     }
 
-    private class LoadTrailersCompleteListener implements TaskCompleteListener<TrailersBean> {
-        @Override
-        public void onTaskComplete(TrailersBean trailersBean) {
-            if (trailersBean != null && trailersBean.getTrailerList() != null && !trailersBean.getTrailerList().isEmpty()) {
-                Log.d(TAG, "Trailers loaded");
-            } else {
-                Log.d(TAG, "Trailers not loaded");
-            }
-        }
+    private void toSuccessState() {
+        mLoading.setVisibility(View.INVISIBLE);
+        mErrorMessage.setVisibility(View.INVISIBLE);
+
+        mDetailsList.setVisibility(View.VISIBLE);
     }
 }

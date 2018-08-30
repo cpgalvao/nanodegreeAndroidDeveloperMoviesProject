@@ -13,7 +13,7 @@ import java.util.List;
 
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
-import br.com.cpg.moviesproject.view.MovieViewHolder;
+import br.com.cpg.moviesproject.view.viewholder.MovieViewHolder;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> implements MovieViewHolder.OnItemClickListener {
 

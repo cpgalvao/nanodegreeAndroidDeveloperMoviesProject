@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    tools:context="br.com.cpg.moviesproject.view.DetailActivity">
+
+
+    <FrameLayout
+        android:id="@+id/title_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_title_background_height"
+        android:background="@color/color_palette_500"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_movie_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/movie_detail_title_marginHorizontal"
+            android:layout_marginLeft="@dimen/movie_detail_title_marginHorizontal"
+            android:layout_marginRight="@dimen/movie_detail_title_marginHorizontal"
+            android:layout_marginStart="@dimen/movie_detail_title_marginHorizontal"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/movie_title_textSize"
+            tools:text="Title" />
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_movie_poster"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/movie_detail_poster_height"
+        android:layout_marginLeft="@dimen/movie_detail_poster_marginLeft"
+        android:layout_marginStart="@dimen/movie_detail_poster_marginLeft"
+        android:layout_marginTop="@dimen/movie_detail_poster_marginTop"
+        android:contentDescription="@string/movie_poster_description"
+        android:minWidth="@dimen/movie_detail_poster_minWidth"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_area"
+        tools:src="@android:drawable/ic_menu_gallery" />
+
+    <TextView
+        android:id="@+id/tv_movie_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/movie_detail_date_marginLeft"
+        android:layout_marginStart="@dimen/movie_detail_date_marginLeft"
+        android:layout_marginTop="@dimen/movie_detail_date_marginTop"
+        android:textColor="@color/gray_palette_500"
+        android:textSize="@dimen/movie_date_textSize"
+        app:layout_constraintStart_toEndOf="@+id/iv_movie_poster"
+        app:layout_constraintTop_toTopOf="@+id/iv_movie_poster"
+        tools:text="0000" />
+
+    <TextView
+        android:id="@+id/tv_movie_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/movie_detail_date_marginTop"
+        android:textColor="@color/gray_palette_900"
+        android:textSize="@dimen/movie_rating_textSize"
+        app:layout_constraintStart_toStartOf="@+id/tv_movie_release_date"
+        app:layout_constraintTop_toBottomOf="@+id/tv_movie_release_date"
+        tools:text="8.0/10" />
+
+    <TextView
+        android:id="@+id/tv_movie_overview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/movie_detail_overview_marginBottom"
+        android:layout_marginEnd="@dimen/movie_detail_overview_marginHorizontal"
+        android:layout_marginLeft="@dimen/movie_detail_overview_marginHorizontal"
+        android:layout_marginRight="@dimen/movie_detail_overview_marginHorizontal"
+        android:layout_marginStart="@dimen/movie_detail_overview_marginHorizontal"
+        android:layout_marginTop="@dimen/movie_detail_overview_marginTop"
+        android:textColor="@color/gray_palette_500"
+        android:textSize="@dimen/movie_overview_textSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_movie_poster"
+        tools:text="description" />
+</android.support.constraint.ConstraintLayout>
