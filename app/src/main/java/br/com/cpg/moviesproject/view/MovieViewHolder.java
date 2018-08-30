@@ -29,7 +29,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
         Picasso.with(context).cancelRequest(mMoviePoster);
         String posterPath = movieBean.getPosterPath();
-        ImageUtils.loadMoviePoster(context, posterPath, mMoviePoster);
+        ImageUtils.loadMoviePosterThumb(context, posterPath, mMoviePoster);
     }
 
     @Override

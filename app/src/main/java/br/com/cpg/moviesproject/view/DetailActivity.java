@@ -6,18 +6,41 @@ import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.cpg.moviesproject.R;
+import br.com.cpg.moviesproject.controller.LoadMoviesTask;
+import br.com.cpg.moviesproject.controller.LoadTrailersTask;
+import br.com.cpg.moviesproject.controller.TaskCompleteListener;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
+import br.com.cpg.moviesproject.model.bean.MoviesBean;
+import br.com.cpg.moviesproject.model.bean.TrailersBean;
+import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
 import br.com.cpg.moviesproject.utils.DateUtils;
 import br.com.cpg.moviesproject.utils.ImageUtils;
+import br.com.cpg.moviesproject.utils.NetworkUtils;
 
+/**
+ * Load trailers - OK
+ * Change Details UI
+ * Adapter
+ * Trailers UI
+ * Play trailer
+ * Load comments
+ * Comments UI
+ * Favorite
+ * Create database/room
+ * Rotation
+ * Change share - first trailer
+ * Lint
+ * Remove api key
+ */
 public class DetailActivity extends AppCompatActivity {
-
+    private static final String TAG = DetailActivity.class.getName();
     public static final String EXTRA_MOVIE_DATA = "br.com.cpg.moviesproject.view.extra.MOVIE_DATA";
     public static final String TRANSITION_NAME = "POSTER_TRANSITION";
     private MovieBean mMovieData;
@@ -27,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView mReleaseDate;
     private TextView mRating;
     private TextView mOverview;
+    private LoadTrailersTask mLoadTrailersTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +70,9 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         fillData();
+        if (mMovieData != null) {
+            loadTrailersData(mMovieData.getId());
+        }
     }
 
     @Override
@@ -88,7 +115,32 @@ public class DetailActivity extends AppCompatActivity {
             mRating.setText(rating);
 
             String posterPath = mMovieData.getPosterPath();
-            ImageUtils.loadMoviePoster2(this, posterPath, mPoster);
+            ImageUtils.loadMoviePosterDetail(this, posterPath, mPoster);
+        }
+    }
+
+    private void loadTrailersData(int movieId) {
+        if (mLoadTrailersTask != null) {
+            mLoadTrailersTask.cancel(true);
+            mLoadTrailersTask = null;
+        }
+
+        if (NetworkUtils.verifyNetworkConnection(this)) {
+            mLoadTrailersTask = new LoadTrailersTask(new LoadTrailersCompleteListener());
+            mLoadTrailersTask.execute(movieId);
+        } else {
+            Log.e(TAG, "Error loading trailers");
+        }
+    }
+
+    private class LoadTrailersCompleteListener implements TaskCompleteListener<TrailersBean> {
+        @Override
+        public void onTaskComplete(TrailersBean trailersBean) {
+            if (trailersBean != null && trailersBean.getTrailerList() != null && !trailersBean.getTrailerList().isEmpty()) {
+                Log.d(TAG, "Trailers loaded");
+            } else {
+                Log.d(TAG, "Trailers not loaded");
+            }
         }
     }
 }

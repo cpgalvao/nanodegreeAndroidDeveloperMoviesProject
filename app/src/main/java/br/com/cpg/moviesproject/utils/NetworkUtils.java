@@ -1,5 +1,8 @@
 package br.com.cpg.moviesproject.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -44,5 +47,17 @@ public class NetworkUtils {
             Log.e(TAG, "Error generating URL", e);
         }
         return url;
+    }
+
+    public static boolean verifyNetworkConnection(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        boolean isConnected = false;
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        }
+
+        return isConnected;
     }
 }

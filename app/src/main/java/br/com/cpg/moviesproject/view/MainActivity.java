@@ -31,6 +31,7 @@ import br.com.cpg.moviesproject.controller.TaskCompleteListener;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
+import br.com.cpg.moviesproject.utils.NetworkUtils;
 
 /**
  * Request/Parser - OK
@@ -46,6 +47,7 @@ import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
  * Animation - OK
  * Lint - OK
  * Remove api key - OK
+ * Menu favorites
  */
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
     private static final String STATE_MOVIES_LIST = "STATE_MOVIES_LIST";
@@ -129,25 +131,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             mLoadMoviesTask = null;
         }
 
-        if (verifyNetworkConnection()) {
+        if (NetworkUtils.verifyNetworkConnection(this)) {
             toLoadingState();
             mLoadMoviesTask = new LoadMoviesTask(new LoadMoviesCompleteListener());
             mLoadMoviesTask.execute(sortOrder);
         } else {
             toErrorState();
         }
-    }
-
-    private boolean verifyNetworkConnection() {
-        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        boolean isConnected = false;
-        if (cm != null) {
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        }
-
-        return isConnected;
     }
 
     private void setupUI() {

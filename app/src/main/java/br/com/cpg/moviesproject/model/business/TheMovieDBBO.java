@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import br.com.cpg.moviesproject.model.bean.MoviesBean;
+import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
 
 public class TheMovieDBBO {
@@ -20,6 +21,8 @@ public class TheMovieDBBO {
     private static final String POPULAR_SORT_PATH = "popular";
     private static final String TOP_RATED_SORT_PATH = "top_rated";
     private static final String IMAGE_SIZE_PATH = "w185";
+
+    private static final String VIDEOS_PATH = "videos";
 
     private static final String API_KEY_PARAM = "api_key";
 
@@ -33,6 +36,30 @@ public class TheMovieDBBO {
                 .appendPath(IMAGE_SIZE_PATH)
                 .appendEncodedPath(posterPath)
                 .build().toString();
+    }
+
+    public TrailersBean getTrailersList(String apiKey, int movieId) {
+        TrailersBean trailersBean;
+
+        Uri.Builder uriBuilder = Uri.parse(THE_MOVIE_DB_BASE_URL).buildUpon()
+                .appendPath(String.valueOf(movieId))
+                .appendPath(VIDEOS_PATH)
+                .appendQueryParameter(API_KEY_PARAM, apiKey);
+
+        Uri uri = uriBuilder.build();
+        URL url = NetworkUtils.getURL(uri);
+
+        try {
+            String jsonString = NetworkUtils.executeGetRequest(url);
+
+            Gson gson = new Gson();
+            trailersBean = gson.fromJson(jsonString, TrailersBean.class);
+        } catch (IOException e) {
+            Log.e(TAG, "Error on request " + url, e);
+            trailersBean = null;
+        }
+
+        return trailersBean;
     }
 
     public MoviesBean getPopularMoviesList(String apiKey) {
