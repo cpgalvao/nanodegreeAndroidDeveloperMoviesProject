@@ -12,20 +12,23 @@ import java.util.List;
 
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.bean.DetailsInterface;
+import br.com.cpg.moviesproject.model.bean.HeaderBean;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
+import br.com.cpg.moviesproject.model.bean.ReviewBean;
 import br.com.cpg.moviesproject.model.bean.TrailerBean;
 import br.com.cpg.moviesproject.view.viewholder.DetailViewHolder;
 import br.com.cpg.moviesproject.view.viewholder.DetailsBaseViewHolder;
+import br.com.cpg.moviesproject.view.viewholder.HeaderViewHolder;
+import br.com.cpg.moviesproject.view.viewholder.ReviewViewHolder;
+import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
 
 public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> {
-    private enum DetailMovieType {
-        DETAIL, TRAILER
-    }
-
     private final List<DetailsInterface> mDetailsMovieData;
+    private final TrailerViewHolder.TrailerClickHandler mTrailerClickHandler;
 
-    public DetailsAdapter() {
+    public DetailsAdapter(TrailerViewHolder.TrailerClickHandler trailerClickHandler) {
         mDetailsMovieData = new ArrayList<>();
+        mTrailerClickHandler = trailerClickHandler;
     }
 
     @Override
@@ -36,6 +39,10 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
             type = DetailMovieType.DETAIL;
         } else if (item instanceof TrailerBean) {
             type = DetailMovieType.TRAILER;
+        } else if (item instanceof ReviewBean) {
+            type = DetailMovieType.REVIEW;
+        } else if (item instanceof HeaderBean) {
+            type = DetailMovieType.HEADER;
         } else {
             throw new UnsupportedOperationException("Invalid type at position " + position);
         }
@@ -56,8 +63,16 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
                 viewHolder = new DetailViewHolder(detailView);
                 break;
             case TRAILER:
-                View trailerView = inflater.inflate(R.layout.detail_item, parent, false);
-                viewHolder = new DetailViewHolder(trailerView);
+                View trailerView = inflater.inflate(R.layout.trailer_item, parent, false);
+                viewHolder = new TrailerViewHolder(trailerView, mTrailerClickHandler);
+                break;
+            case REVIEW:
+                View reviewView = inflater.inflate(R.layout.review_item, parent, false);
+                viewHolder = new ReviewViewHolder(reviewView);
+                break;
+            case HEADER:
+                View headerView = inflater.inflate(R.layout.header_item, parent, false);
+                viewHolder = new HeaderViewHolder(headerView);
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid type " + viewType);
@@ -86,5 +101,13 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
         mDetailsMovieData.clear();
         mDetailsMovieData.addAll(detailsMovieData);
         notifyDataSetChanged();
+    }
+
+    private enum DetailMovieType {
+        DETAIL, TRAILER, HEADER, REVIEW
+    }
+
+    public interface DetailsClickListener {
+        void onItemClick(DetailsInterface item);
     }
 }

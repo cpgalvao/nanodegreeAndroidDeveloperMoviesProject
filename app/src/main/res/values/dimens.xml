@@ -2,21 +2,32 @@
 <resources>
     <dimen name="movie_poster_height">270dp</dimen>
     <dimen name="progress_size">42dp</dimen>
+
+    <dimen name="movie_detail_marginHorizontal">20dp</dimen>
+
+    <dimen name="movie_detail_marginBottom">10dp</dimen>
     <dimen name="movie_detail_title_background_height">150dp</dimen>
-    <dimen name="movie_detail_title_marginHorizontal">20dp</dimen>
     <dimen name="movie_detail_poster_height">200dp</dimen>
     <dimen name="movie_detail_poster_minWidth">140dp</dimen>
     <dimen name="movie_detail_poster_marginTop">10dp</dimen>
-    <dimen name="movie_detail_poster_marginLeft">@dimen/movie_detail_title_marginHorizontal</dimen>
     <dimen name="movie_detail_date_marginTop">10dp</dimen>
     <dimen name="movie_detail_date_marginLeft">50dp</dimen>
     <dimen name="movie_detail_overview_marginTop">20dp</dimen>
     <dimen name="movie_detail_overview_marginBottom">20dp</dimen>
-    <dimen name="movie_detail_overview_marginHorizontal">15dp</dimen>
+
+    <dimen name="movie_trailer_height">80dp</dimen>
+    <dimen name="movie_trailer_textSize">16sp</dimen>
 
     <dimen name="error_message_textSize">20sp</dimen>
     <dimen name="movie_title_textSize">50sp</dimen>
     <dimen name="movie_date_textSize">30sp</dimen>
     <dimen name="movie_rating_textSize">16sp</dimen>
     <dimen name="movie_overview_textSize">14sp</dimen>
+
+    <dimen name="movie_review_marginVertical">10dp</dimen>
+    <dimen name="movie_review_author_textSize">18sp</dimen>
+    <dimen name="movie_review_text_textSize">16sp</dimen>
+
+    <dimen name="header_height">20dp</dimen>
+    <dimen name="header_textSize">12sp</dimen>
 </resources>

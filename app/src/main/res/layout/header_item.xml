@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv_header_title"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/header_height"
+    android:layout_gravity="center_vertical"
+    android:layout_marginStart="@dimen/movie_detail_marginHorizontal"
+    android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
+    android:gravity="center_vertical"
+    android:textColor="@color/gray_palette_900"
+    android:textSize="@dimen/header_textSize"
+    tools:text="Trailers:" />
+

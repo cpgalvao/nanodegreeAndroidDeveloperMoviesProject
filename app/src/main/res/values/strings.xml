@@ -6,4 +6,7 @@
     <string name="top_rated_sort">Top rated sort</string>
     <string name="rating">%1$s/10</string>
     <string name="share">Share</string>
+    <string name="movie_trailer_description">Play button</string>
+    <string name="trailer_header">Trailers:</string>
+    <string name="reviews_header">Reviews:</string>
 </resources>
