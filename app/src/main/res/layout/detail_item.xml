@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true"
     android:layout_marginBottom="@dimen/movie_detail_marginBottom"
+    android:fillViewport="true"
     tools:context="br.com.cpg.moviesproject.view.DetailActivity">
 
 
@@ -24,24 +24,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/movie_detail_marginHorizontal"
-            android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
-            android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
             android:layout_marginStart="@dimen/movie_detail_marginHorizontal"
+            android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
+            android:layout_marginEnd="@dimen/movie_detail_marginHorizontal"
+            android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@android:color/white"
             android:textSize="@dimen/movie_title_textSize"
             tools:text="Title" />
-
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/movie_detail_favorite_marginTop"
+        android:layout_marginEnd="@dimen/movie_detail_marginHorizontal"
+        android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
+        android:contentDescription="@string/favorite_button_description"
+        android:src="@android:drawable/btn_star_big_off"
+        app:layout_constraintRight_toRightOf="@id/title_area"
+        app:layout_constraintTop_toTopOf="@id/iv_movie_poster"/>
 
     <ImageView
         android:id="@+id/iv_movie_poster"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/movie_detail_poster_height"
-        android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
         android:layout_marginStart="@dimen/movie_detail_marginHorizontal"
+        android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
         android:layout_marginTop="@dimen/movie_detail_poster_marginTop"
         android:contentDescription="@string/movie_poster_description"
         android:minWidth="@dimen/movie_detail_poster_minWidth"
@@ -54,8 +65,8 @@
         android:id="@+id/tv_movie_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/movie_detail_date_marginLeft"
         android:layout_marginStart="@dimen/movie_detail_date_marginLeft"
+        android:layout_marginLeft="@dimen/movie_detail_date_marginLeft"
         android:layout_marginTop="@dimen/movie_detail_date_marginTop"
         android:textColor="@color/gray_palette_500"
         android:textSize="@dimen/movie_date_textSize"
@@ -78,12 +89,12 @@
         android:id="@+id/tv_movie_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/movie_detail_overview_marginBottom"
-        android:layout_marginEnd="@dimen/movie_detail_marginHorizontal"
-        android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
-        android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
         android:layout_marginStart="@dimen/movie_detail_marginHorizontal"
+        android:layout_marginLeft="@dimen/movie_detail_marginHorizontal"
         android:layout_marginTop="@dimen/movie_detail_overview_marginTop"
+        android:layout_marginEnd="@dimen/movie_detail_marginHorizontal"
+        android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
+        android:layout_marginBottom="@dimen/movie_detail_overview_marginBottom"
         android:textColor="@color/gray_palette_500"
         android:textSize="@dimen/movie_overview_textSize"
         app:layout_constraintEnd_toEndOf="parent"

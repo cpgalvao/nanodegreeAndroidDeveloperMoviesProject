@@ -29,6 +29,7 @@ import br.com.cpg.moviesproject.model.bean.TrailerBean;
 import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.model.business.YoutubeBO;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
+import br.com.cpg.moviesproject.view.viewholder.DetailViewHolder;
 import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
 import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModel;
 import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
@@ -41,11 +42,11 @@ import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
  * Play trailer - OK
  * Load comments - OK
  * Comments UI - OK
- * Favorite
+ * Favorite - OK
  * Create database/room
  * Animation
  * Rotation
- * Change share - first trailer
+ * Change share - first trailer - OK
  * Lint
  * Remove api key
  */
@@ -54,7 +55,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final String TRANSITION_NAME = "POSTER_TRANSITION";
     private static final String TAG = DetailActivity.class.getName();
     private MovieBean mMovieData;
-
+    private TrailerBean mFirstTrailer;
     private RecyclerView mDetailsList;
     private TextView mErrorMessage;
     private ProgressBar mLoading;
@@ -90,6 +91,7 @@ public class DetailActivity extends AppCompatActivity {
                     public void onChanged(@Nullable TrailersBean trailersBean) {
                         viewModel.getTrailers().removeObserver(this);
                         if (trailersBean != null && trailersBean.getTrailerList() != null && !trailersBean.getTrailerList().isEmpty()) {
+                            mFirstTrailer = trailersBean.getTrailerList().get(0);
                             mAdapter.setDetailsData(viewModel.getDetailsData(DetailActivity.this));
                         }
                     }
@@ -123,8 +125,10 @@ public class DetailActivity extends AppCompatActivity {
             case R.id.action_share:
                 String mimeType = "text/plain";
                 String title = "Pop Movies";
+                YoutubeBO youtubeBO = new YoutubeBO();
+                String trailerUrl = (mFirstTrailer != null) ? youtubeBO.getTrailerUrl(mFirstTrailer.getKey()).toString() : "";
                 ShareCompat.IntentBuilder.from(this).setType(mimeType)
-                        .setChooserTitle(title).setText(mMovieData.getTitle() + "\n" + mMovieData.getOverview()).startChooser();
+                        .setChooserTitle(title).setText(mMovieData.getTitle() + "\n" + mMovieData.getOverview() + "\n" + trailerUrl).startChooser();
 
                 return true;
             default:
@@ -154,7 +158,20 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
             }
+        }, new DetailViewHolder.FavoriteClickHandler() {
+            @Override
+            public void onClick(int position) {
+                Log.d(TAG, "save");
+
+                DetailsInterface item = mAdapter.getItems().get(position);
+                if (item != null) {
+                    MovieBean movie = (MovieBean) item;
+                    movie.setFavorite(!movie.isFavorite());
+                    mAdapter.notifyItemChanged(position);
+                }
+            }
         });
+
         mDetailsList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mDetailsList.setAdapter(mAdapter);
         DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);

@@ -25,10 +25,12 @@ import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
 public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> {
     private final List<DetailsInterface> mDetailsMovieData;
     private final TrailerViewHolder.TrailerClickHandler mTrailerClickHandler;
+    private final DetailViewHolder.FavoriteClickHandler mFavoriteClickHandler;
 
-    public DetailsAdapter(TrailerViewHolder.TrailerClickHandler trailerClickHandler) {
+    public DetailsAdapter(TrailerViewHolder.TrailerClickHandler trailerClickHandler, DetailViewHolder.FavoriteClickHandler favoriteClickHandler) {
         mDetailsMovieData = new ArrayList<>();
         mTrailerClickHandler = trailerClickHandler;
+        mFavoriteClickHandler = favoriteClickHandler;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
         switch (type) {
             case DETAIL:
                 View detailView = inflater.inflate(R.layout.detail_item, parent, false);
-                viewHolder = new DetailViewHolder(detailView);
+                viewHolder = new DetailViewHolder(detailView, mFavoriteClickHandler);
                 break;
             case TRAILER:
                 View trailerView = inflater.inflate(R.layout.trailer_item, parent, false);

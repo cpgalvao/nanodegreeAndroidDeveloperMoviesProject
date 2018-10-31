@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Pop Movies</string>
     <string name="movie_poster_description">Movie poster</string>
+    <string name="favorite_button_description">Add to favorite</string>
     <string name="error_message">Error loading movies, try again</string>
     <string name="popular_sort">Popular sort</string>
     <string name="top_rated_sort">Top rated sort</string>
