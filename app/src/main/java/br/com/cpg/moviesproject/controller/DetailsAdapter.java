@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import br.com.cpg.moviesproject.R;
@@ -95,10 +94,6 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
     @Override
     public int getItemCount() {
         return mDetailsMovieData.size();
-    }
-
-    public List<DetailsInterface> getItems() {
-        return Collections.unmodifiableList(mDetailsMovieData);
     }
 
     public void setDetailsData(List<DetailsInterface> detailsMovieData) {

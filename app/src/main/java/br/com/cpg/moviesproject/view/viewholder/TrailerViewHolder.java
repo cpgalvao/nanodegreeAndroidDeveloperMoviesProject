@@ -1,7 +1,6 @@
 package br.com.cpg.moviesproject.view.viewholder;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.cpg.moviesproject.R;

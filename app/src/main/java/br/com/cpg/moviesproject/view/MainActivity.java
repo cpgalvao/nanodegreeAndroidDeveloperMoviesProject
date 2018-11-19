@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.controller.LoadMoviesTask;
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     this,
                     sharedImageView,
-                    ViewCompat.getTransitionName(sharedImageView));
+                    Objects.requireNonNull(ViewCompat.getTransitionName(sharedImageView)));
             startActivity(intent, options.toBundle());
         } else {
             startActivity(intent);

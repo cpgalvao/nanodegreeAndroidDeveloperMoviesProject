@@ -8,7 +8,6 @@ import com.squareup.picasso.Picasso;
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
 
-
 public class ImageUtils {
     public static void loadMoviePosterThumb(Context context, String posterPath, ImageView imageView) {
         int imageWidth = imageView.getResources().getDisplayMetrics().widthPixels / 2;

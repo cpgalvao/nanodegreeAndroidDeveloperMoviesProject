@@ -3,13 +3,16 @@ package br.com.cpg.moviesproject.view;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,11 +48,11 @@ import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
  * Favorite - OK
  * Create database/room - OK
  * Save favorite - OK
- * Animation
+ * Animation - OK
  * Rotation - OK
  * Change share - first trailer - OK
  * Lint - OK
- * Remove api key
+ * Remove api key - OK
  */
 public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_MOVIE_DATA = "br.com.cpg.moviesproject.view.extra.MOVIE_DATA";
@@ -84,7 +87,6 @@ public class DetailActivity extends AppCompatActivity {
             List<DetailsInterface> data = new ArrayList<>();
             data.add(mMovieData);
             mAdapter.setDetailsData(data);
-
             toSuccessState();
 
             if (NetworkUtils.verifyNetworkConnection(this)) {
@@ -204,8 +206,6 @@ public class DetailActivity extends AppCompatActivity {
         DividerItemDecoration itemDecor = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         itemDecor.setDrawable(getResources().getDrawable(R.drawable.divider));
         mDetailsList.addItemDecoration(itemDecor);
-
-        toSuccessState();
     }
 
     private void toLoadingState() {
