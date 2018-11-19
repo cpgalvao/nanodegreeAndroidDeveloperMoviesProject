@@ -34,6 +34,7 @@ public class ReviewBean implements Parcelable, DetailsInterface {
         return author;
     }
 
+    @SuppressWarnings("unused")
     public void setAuthor(String author) {
         this.author = author;
     }
@@ -42,6 +43,7 @@ public class ReviewBean implements Parcelable, DetailsInterface {
         return content;
     }
 
+    @SuppressWarnings("unused")
     public void setContent(String content) {
         this.content = content;
     }

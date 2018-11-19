@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
 
             if (savedInstanceState.containsKey(STATE_MOVIES_LIST_STATE)) {
                 Parcelable state = savedInstanceState.getParcelable(STATE_MOVIES_LIST_STATE);
-                mMoviesGrid.getLayoutManager().onRestoreInstanceState(state);
+                if (mMoviesGrid.getLayoutManager() != null) {
+                    mMoviesGrid.getLayoutManager().onRestoreInstanceState(state);
+                }
             }
         } else {
             loadMoviesData(TheMovieDBBO.MoviesSortOrder.POPULAR);
@@ -118,11 +120,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(STATE_MOVIES_LIST, new ArrayList<Parcelable>(mAdapter.getItems()));
-        outState.putParcelable(STATE_MOVIES_LIST_STATE, mMoviesGrid.getLayoutManager().onSaveInstanceState());
+        if (mMoviesGrid.getLayoutManager() != null) {
+            outState.putParcelable(STATE_MOVIES_LIST_STATE, mMoviesGrid.getLayoutManager().onSaveInstanceState());
+        }
     }
 
     @Override
-    public void onClick(MovieBean movieBean, ImageView sharedImageView) {
+    public void onMovieClick(MovieBean movieBean, ImageView sharedImageView) {
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(DetailActivity.EXTRA_MOVIE_DATA, movieBean);
 

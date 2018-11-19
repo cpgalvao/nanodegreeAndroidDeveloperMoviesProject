@@ -13,9 +13,9 @@ import br.com.cpg.moviesproject.utils.ImageUtils;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     private final ImageView mMoviePoster;
-    private final OnItemClickListener mClickListener;
+    private final OnMovieItemClickListener mClickListener;
 
-    public MovieViewHolder(View itemView, OnItemClickListener clickListener) {
+    public MovieViewHolder(View itemView, OnMovieItemClickListener clickListener) {
         super(itemView);
 
         mClickListener = clickListener;
@@ -34,10 +34,10 @@ public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View view) {
-        mClickListener.onClick(getAdapterPosition(), mMoviePoster);
+        mClickListener.onMovieClick(getAdapterPosition(), mMoviePoster);
     }
 
-    public interface OnItemClickListener {
-        void onClick(int position, ImageView sharedImageView);
+    public interface OnMovieItemClickListener {
+        void onMovieClick(int position, ImageView sharedImageView);
     }
 }

@@ -8,7 +8,7 @@ import br.com.cpg.moviesproject.model.bean.DetailsInterface;
 import br.com.cpg.moviesproject.model.bean.HeaderBean;
 
 public class HeaderViewHolder extends DetailsBaseViewHolder {
-    private TextView mTitle;
+    private final TextView mTitle;
 
     public HeaderViewHolder(View itemView) {
         super(itemView);

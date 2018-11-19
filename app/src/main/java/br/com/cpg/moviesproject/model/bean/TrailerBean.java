@@ -23,6 +23,7 @@ public class TrailerBean implements Parcelable, DetailsInterface {
         return name;
     }
 
+    @SuppressWarnings("unused")
     public void setName(String name) {
         this.name = name;
     }
@@ -31,6 +32,7 @@ public class TrailerBean implements Parcelable, DetailsInterface {
         return key;
     }
 
+    @SuppressWarnings("unused")
     public void setKey(String key) {
         this.key = key;
     }

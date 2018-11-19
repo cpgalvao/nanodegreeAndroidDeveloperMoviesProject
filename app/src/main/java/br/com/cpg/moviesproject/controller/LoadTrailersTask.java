@@ -3,7 +3,6 @@ package br.com.cpg.moviesproject.controller;
 import android.os.AsyncTask;
 
 import br.com.cpg.moviesproject.BuildConfig;
-import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
 

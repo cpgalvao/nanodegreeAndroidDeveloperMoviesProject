@@ -14,14 +14,14 @@ import br.com.cpg.moviesproject.utils.DateUtils;
 import br.com.cpg.moviesproject.utils.ImageUtils;
 
 public class DetailViewHolder extends DetailsBaseViewHolder {
-    private TextView mTitle;
-    private ImageView mFavorite;
-    private ImageView mPoster;
-    private TextView mReleaseDate;
-    private TextView mRating;
-    private TextView mOverview;
+    private final TextView mTitle;
+    private final ImageView mFavorite;
+    private final ImageView mPoster;
+    private final TextView mReleaseDate;
+    private final TextView mRating;
+    private final TextView mOverview;
 
-    public DetailViewHolder(View itemView, final FavoriteClickHandler clickHandler) {
+    public DetailViewHolder(View itemView, final OnFavoriteItemClickListener clickHandler) {
         super(itemView);
 
         mTitle = itemView.findViewById(R.id.tv_movie_title);
@@ -35,7 +35,7 @@ public class DetailViewHolder extends DetailsBaseViewHolder {
             @Override
             public void onClick(View view) {
                 if (clickHandler != null) {
-                    clickHandler.onClick(getAdapterPosition());
+                    clickHandler.onFavoriteClick(getAdapterPosition());
                 }
             }
         });
@@ -62,7 +62,7 @@ public class DetailViewHolder extends DetailsBaseViewHolder {
         ImageUtils.loadMoviePosterDetail(context, posterPath, mPoster);
     }
 
-    public interface FavoriteClickHandler {
-        void onClick(int position);
+    public interface OnFavoriteItemClickListener {
+        void onFavoriteClick(int position);
     }
 }

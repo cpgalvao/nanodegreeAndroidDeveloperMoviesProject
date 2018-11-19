@@ -1,6 +1,7 @@
 package br.com.cpg.moviesproject.controller;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +23,12 @@ import br.com.cpg.moviesproject.view.viewholder.HeaderViewHolder;
 import br.com.cpg.moviesproject.view.viewholder.ReviewViewHolder;
 import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
 
-public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> {
+public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> implements TrailerViewHolder.OnTrailerItemClickListener, DetailViewHolder.OnFavoriteItemClickListener {
     private final List<DetailsInterface> mDetailsMovieData;
-    private final TrailerViewHolder.TrailerClickHandler mTrailerClickHandler;
-    private final DetailViewHolder.FavoriteClickHandler mFavoriteClickHandler;
+    private final OnTrailerClickHandler mTrailerClickHandler;
+    private final OnFavoriteClickListener mFavoriteClickHandler;
 
-    public DetailsAdapter(TrailerViewHolder.TrailerClickHandler trailerClickHandler, DetailViewHolder.FavoriteClickHandler favoriteClickHandler) {
+    public DetailsAdapter(OnTrailerClickHandler trailerClickHandler, OnFavoriteClickListener favoriteClickHandler) {
         mDetailsMovieData = new ArrayList<>();
         mTrailerClickHandler = trailerClickHandler;
         mFavoriteClickHandler = favoriteClickHandler;
@@ -52,21 +53,22 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
         return type.ordinal();
     }
 
+    @NonNull
     @Override
-    public DetailsBaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DetailsBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        DetailsBaseViewHolder viewHolder = null;
+        DetailsBaseViewHolder viewHolder;
         DetailMovieType type = DetailMovieType.values()[viewType];
         switch (type) {
             case DETAIL:
                 View detailView = inflater.inflate(R.layout.detail_item, parent, false);
-                viewHolder = new DetailViewHolder(detailView, mFavoriteClickHandler);
+                viewHolder = new DetailViewHolder(detailView, this);
                 break;
             case TRAILER:
                 View trailerView = inflater.inflate(R.layout.trailer_item, parent, false);
-                viewHolder = new TrailerViewHolder(trailerView, mTrailerClickHandler);
+                viewHolder = new TrailerViewHolder(trailerView, this);
                 break;
             case REVIEW:
                 View reviewView = inflater.inflate(R.layout.review_item, parent, false);
@@ -85,7 +87,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(DetailsBaseViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DetailsBaseViewHolder holder, int position) {
         DetailsInterface detailsMovieBean = mDetailsMovieData.get(position);
         holder.bind(detailsMovieBean);
     }
@@ -105,11 +107,25 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsBaseViewHolder> 
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onFavoriteClick(int position) {
+        mFavoriteClickHandler.onFavoriteClick(position, mDetailsMovieData.get(position));
+    }
+
+    @Override
+    public void onTrailerClick(int position) {
+        mTrailerClickHandler.onTrailerClick(mDetailsMovieData.get(position));
+    }
+
     private enum DetailMovieType {
         DETAIL, TRAILER, HEADER, REVIEW
     }
 
-    public interface DetailsClickListener {
-        void onItemClick(DetailsInterface item);
+    public interface OnFavoriteClickListener {
+        void onFavoriteClick(int position, DetailsInterface item);
+    }
+
+    public interface OnTrailerClickHandler {
+        void onTrailerClick(DetailsInterface item);
     }
 }

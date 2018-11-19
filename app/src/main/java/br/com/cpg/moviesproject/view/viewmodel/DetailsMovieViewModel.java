@@ -20,10 +20,10 @@ import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 
 public class DetailsMovieViewModel extends ViewModel {
-    private MutableLiveData<TrailersBean> mTrailers;
-    private MutableLiveData<ReviewsBean> mReviews;
-    private LiveData<MovieBean> mFavoriteBean;
-    private MovieBean mMovieBean;
+    private final MutableLiveData<TrailersBean> mTrailers;
+    private final MutableLiveData<ReviewsBean> mReviews;
+    private final LiveData<MovieBean> mFavoriteBean;
+    private final MovieBean mMovieBean;
 
     public DetailsMovieViewModel(AppDatabase database, MovieBean movieBean) {
         mMovieBean = movieBean;

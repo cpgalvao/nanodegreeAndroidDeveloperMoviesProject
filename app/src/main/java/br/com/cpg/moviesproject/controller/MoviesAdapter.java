@@ -1,6 +1,7 @@
 package br.com.cpg.moviesproject.controller;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,7 @@ import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.view.viewholder.MovieViewHolder;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> implements MovieViewHolder.OnItemClickListener {
+public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> implements MovieViewHolder.OnMovieItemClickListener {
 
     private final List<MovieBean> mMoviesData;
     private final OnMovieClickHandler mClickHandler;
@@ -25,8 +26,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> impleme
         mClickHandler = clickHandler;
     }
 
+    @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
@@ -37,7 +39,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> impleme
     }
 
     @Override
-    public void onBindViewHolder(MovieViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         MovieBean movieBean = mMoviesData.get(position);
         holder.bind(movieBean);
     }
@@ -58,11 +60,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieViewHolder> impleme
     }
 
     @Override
-    public void onClick(int position, ImageView sharedImageView) {
-        mClickHandler.onClick(mMoviesData.get(position), sharedImageView);
+    public void onMovieClick(int position, ImageView sharedImageView) {
+        mClickHandler.onMovieClick(mMoviesData.get(position), sharedImageView);
     }
 
     public interface OnMovieClickHandler {
-        void onClick(MovieBean movieBean, ImageView sharedImageView);
+        void onMovieClick(MovieBean movieBean, ImageView sharedImageView);
     }
 }

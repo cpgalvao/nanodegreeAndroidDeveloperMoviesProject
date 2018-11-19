@@ -1,6 +1,7 @@
 package br.com.cpg.moviesproject.view.viewholder;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.cpg.moviesproject.R;
@@ -8,9 +9,9 @@ import br.com.cpg.moviesproject.model.bean.DetailsInterface;
 import br.com.cpg.moviesproject.model.bean.TrailerBean;
 
 public class TrailerViewHolder extends DetailsBaseViewHolder {
-    private TextView mTrailerName;
+    private final TextView mTrailerName;
 
-    public TrailerViewHolder(View itemView, final TrailerClickHandler clickHandler) {
+    public TrailerViewHolder(View itemView, final OnTrailerItemClickListener clickHandler) {
         super(itemView);
 
         mTrailerName = itemView.findViewById(R.id.tv_trailer_name);
@@ -19,7 +20,7 @@ public class TrailerViewHolder extends DetailsBaseViewHolder {
             @Override
             public void onClick(View view) {
                 if (clickHandler != null) {
-                    clickHandler.onClick(getAdapterPosition());
+                    clickHandler.onTrailerClick(getAdapterPosition());
                 }
             }
         });
@@ -31,7 +32,7 @@ public class TrailerViewHolder extends DetailsBaseViewHolder {
         mTrailerName.setText(trailerBean.getName());
     }
 
-    public interface TrailerClickHandler {
-        void onClick(int position);
+    public interface OnTrailerItemClickListener {
+        void onTrailerClick(int position);
     }
 }

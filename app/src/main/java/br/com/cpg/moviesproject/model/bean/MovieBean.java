@@ -25,7 +25,7 @@ public class MovieBean implements Parcelable, DetailsInterface {
         }
     };
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey()
     private int id;
     private String title;
     @ColumnInfo(name = "poster_path")
@@ -70,6 +70,7 @@ public class MovieBean implements Parcelable, DetailsInterface {
         return id;
     }
 
+    @SuppressWarnings("unused")
     public void setId(int id) {
         this.id = id;
     }

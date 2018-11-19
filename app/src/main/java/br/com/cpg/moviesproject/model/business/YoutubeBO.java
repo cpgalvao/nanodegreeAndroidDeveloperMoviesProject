@@ -3,8 +3,6 @@ package br.com.cpg.moviesproject.model.business;
 import android.net.Uri;
 
 public class YoutubeBO {
-    private static final String TAG = YoutubeBO.class.getSimpleName();
-
     private static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
 
     private static final String VIDEO_KEY_PARAM = "v";

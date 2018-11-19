@@ -8,8 +8,8 @@ import br.com.cpg.moviesproject.model.bean.DetailsInterface;
 import br.com.cpg.moviesproject.model.bean.ReviewBean;
 
 public class ReviewViewHolder extends DetailsBaseViewHolder {
-    private TextView mReviewAuthor;
-    private TextView mReviewText;
+    private final TextView mReviewAuthor;
+    private final TextView mReviewText;
 
     public ReviewViewHolder(View itemView) {
         super(itemView);

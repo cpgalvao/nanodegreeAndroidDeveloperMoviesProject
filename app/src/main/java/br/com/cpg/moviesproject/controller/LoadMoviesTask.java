@@ -2,13 +2,9 @@ package br.com.cpg.moviesproject.controller;
 
 import android.os.AsyncTask;
 
-import java.lang.ref.WeakReference;
-
 import br.com.cpg.moviesproject.BuildConfig;
-import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
-import br.com.cpg.moviesproject.view.MainActivity;
 
 public class LoadMoviesTask extends AsyncTask<Object, Void, MoviesBean> {
     private final TaskCompleteListener<MoviesBean> mTaskCompleteListener;

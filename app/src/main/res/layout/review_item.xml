@@ -33,7 +33,7 @@
         android:layout_marginRight="@dimen/movie_detail_marginHorizontal"
         android:gravity="center_vertical"
         android:textColor="@color/gray_palette_900"
-        android:textSize="@dimen/movie_trailer_textSize"
+        android:textSize="@dimen/movie_review_text_textSize"
         tools:text="My review" />
 </LinearLayout>
 

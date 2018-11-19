@@ -31,8 +31,6 @@ import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.model.business.YoutubeBO;
 import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
-import br.com.cpg.moviesproject.view.viewholder.DetailViewHolder;
-import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
 import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModel;
 import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
 
@@ -50,7 +48,7 @@ import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
  * Animation
  * Rotation - OK
  * Change share - first trailer - OK
- * Lint
+ * Lint - OK
  * Remove api key
  */
 public class DetailActivity extends AppCompatActivity {
@@ -158,10 +156,9 @@ public class DetailActivity extends AppCompatActivity {
         mErrorMessage = findViewById(R.id.tv_details_error_message);
         mLoading = findViewById(R.id.pb_details_loading);
 
-        mAdapter = new DetailsAdapter(new TrailerViewHolder.TrailerClickHandler() {
+        mAdapter = new DetailsAdapter(new DetailsAdapter.OnTrailerClickHandler() {
             @Override
-            public void onClick(int position) {
-                DetailsInterface item = mAdapter.getItems().get(position);
+            public void onTrailerClick(DetailsInterface item) {
                 if (item != null) {
                     TrailerBean trailer = (TrailerBean) item;
                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -175,12 +172,11 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
             }
-        }, new DetailViewHolder.FavoriteClickHandler() {
+        }, new DetailsAdapter.OnFavoriteClickListener() {
             @Override
-            public void onClick(int position) {
+            public void onFavoriteClick(int position, DetailsInterface item) {
                 Log.d(TAG, "save");
 
-                DetailsInterface item = mAdapter.getItems().get(position);
                 if (item != null) {
                     final MovieBean movie = (MovieBean) item;
                     final boolean favorite = movie.isFavorite();

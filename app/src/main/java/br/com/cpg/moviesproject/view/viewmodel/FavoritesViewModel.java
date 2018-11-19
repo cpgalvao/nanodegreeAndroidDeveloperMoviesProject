@@ -9,7 +9,7 @@ import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 
 public class FavoritesViewModel extends ViewModel {
-    private LiveData<List<MovieBean>> mFavorites;
+    private final LiveData<List<MovieBean>> mFavorites;
 
     public FavoritesViewModel(AppDatabase database) {
         mFavorites = database.favoriteDao().loadAllFavorites();
