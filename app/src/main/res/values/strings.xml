@@ -5,6 +5,7 @@
     <string name="error_message">Error loading movies, try again</string>
     <string name="popular_sort">Popular sort</string>
     <string name="top_rated_sort">Top rated sort</string>
+    <string name="favorites">Just favorites</string>
     <string name="rating">%1$s/10</string>
     <string name="share">Share</string>
     <string name="movie_trailer_description">Play button</string>

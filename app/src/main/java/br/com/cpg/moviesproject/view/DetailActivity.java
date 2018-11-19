@@ -48,7 +48,7 @@ import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
  * Create database/room - OK
  * Save favorite - OK
  * Animation
- * Rotation
+ * Rotation - OK
  * Change share - first trailer - OK
  * Lint
  * Remove api key
@@ -96,7 +96,6 @@ public class DetailActivity extends AppCompatActivity {
                 viewModel.getMovie().observe(this, new Observer<MovieBean>() {
                     @Override
                     public void onChanged(@Nullable MovieBean movieBean) {
-                        viewModel.getMovie().removeObserver(this);
                         if (movieBean != null) {
                             mMovieData = movieBean;
                             mAdapter.setDetailsData(viewModel.getDetailsData(DetailActivity.this));
@@ -185,7 +184,9 @@ public class DetailActivity extends AppCompatActivity {
                 if (item != null) {
                     final MovieBean movie = (MovieBean) item;
                     final boolean favorite = movie.isFavorite();
+                    Log.d(TAG, "save" + !movie.isFavorite());
                     movie.setFavorite(!movie.isFavorite());
+                    mMovieData.setFavorite(!mMovieData.isFavorite());
                     Executors.newSingleThreadExecutor().execute(new Runnable() {
                         @Override
                         public void run() {

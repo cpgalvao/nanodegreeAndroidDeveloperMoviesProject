@@ -1,13 +1,13 @@
 package br.com.cpg.moviesproject.view;
 
-import android.content.Context;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +31,10 @@ import br.com.cpg.moviesproject.controller.TaskCompleteListener;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.model.bean.MoviesBean;
 import br.com.cpg.moviesproject.model.business.TheMovieDBBO;
+import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
+import br.com.cpg.moviesproject.view.viewmodel.FavoritesViewModel;
+import br.com.cpg.moviesproject.view.viewmodel.FavoritesViewModelFactory;
 
 /**
  * Request/Parser - OK
@@ -47,7 +50,7 @@ import br.com.cpg.moviesproject.utils.NetworkUtils;
  * Animation - OK
  * Lint - OK
  * Remove api key - OK
- * Menu favorites
+ * Menu favorites - OK
  */
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnMovieClickHandler {
     private static final String STATE_MOVIES_LIST = "STATE_MOVIES_LIST";
@@ -58,11 +61,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
 
     private MoviesAdapter mAdapter;
     private LoadMoviesTask mLoadMoviesTask;
+    private AppDatabase mDb;
+
+    private FavoritesViewModel mFavoritesViewModel;
+    private Observer<List<MovieBean>> mFavoriteObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         setupUI();
 
@@ -90,10 +99,15 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
         int clickedItem = item.getItemId();
         switch (clickedItem) {
             case R.id.action_popular_sort:
+                stopObserveFavorites();
                 loadMoviesData(TheMovieDBBO.MoviesSortOrder.POPULAR);
                 return true;
             case R.id.action_top_rated_sort:
+                stopObserveFavorites();
                 loadMoviesData(TheMovieDBBO.MoviesSortOrder.TOP_RATED);
+                return true;
+            case R.id.action_favorites:
+                loadFavorites();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -122,6 +136,32 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnM
             startActivity(intent, options.toBundle());
         } else {
             startActivity(intent);
+        }
+    }
+
+    private void loadFavorites() {
+        toLoadingState();
+        FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb);
+        mFavoritesViewModel = ViewModelProviders.of(this, factory).get(FavoritesViewModel.class);
+        mFavoriteObserver = new Observer<List<MovieBean>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieBean> favorites) {
+                if (favorites != null && !favorites.isEmpty()) {
+                    MainActivity.this.toSuccessState();
+                    MainActivity.this.mAdapter.setMoviesData(favorites);
+                    MainActivity.this.mMoviesGrid.scrollToPosition(0);
+                } else {
+                    MainActivity.this.toErrorState();
+                }
+            }
+        };
+        mFavoritesViewModel.getFavorites().observe(this, mFavoriteObserver);
+
+    }
+
+    private void stopObserveFavorites() {
+        if (mFavoritesViewModel != null) {
+            mFavoritesViewModel.getFavorites().removeObserver(mFavoriteObserver);
         }
     }
 
