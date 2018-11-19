@@ -17,16 +17,20 @@ import br.com.cpg.moviesproject.model.bean.HeaderBean;
 import br.com.cpg.moviesproject.model.bean.MovieBean;
 import br.com.cpg.moviesproject.model.bean.ReviewsBean;
 import br.com.cpg.moviesproject.model.bean.TrailersBean;
+import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 
 public class DetailsMovieViewModel extends ViewModel {
-    private MovieBean mDetailBean;
     private MutableLiveData<TrailersBean> mTrailers;
     private MutableLiveData<ReviewsBean> mReviews;
+    private LiveData<MovieBean> mFavoriteBean;
+    private MovieBean mMovieBean;
 
-    public DetailsMovieViewModel(MovieBean movieBean) {
+    public DetailsMovieViewModel(AppDatabase database, MovieBean movieBean) {
+        mMovieBean = movieBean;
         mTrailers = new MutableLiveData<>();
         mReviews = new MutableLiveData<>();
-        mDetailBean = movieBean;
+
+        mFavoriteBean = database.favoriteDao().loadFavoriteById(movieBean.getId());
 
         LoadTrailersTask loadTrailersTask = new LoadTrailersTask(new TaskCompleteListener<TrailersBean>() {
             @Override
@@ -34,7 +38,7 @@ public class DetailsMovieViewModel extends ViewModel {
                 mTrailers.setValue(result);
             }
         });
-        loadTrailersTask.execute(mDetailBean.getId());
+        loadTrailersTask.execute(movieBean.getId());
 
         LoadReviewsTask loadReviewsTask = new LoadReviewsTask(new TaskCompleteListener<ReviewsBean>() {
             @Override
@@ -42,7 +46,11 @@ public class DetailsMovieViewModel extends ViewModel {
                 mReviews.setValue(result);
             }
         });
-        loadReviewsTask.execute(mDetailBean.getId());
+        loadReviewsTask.execute(movieBean.getId());
+    }
+
+    public LiveData<MovieBean> getMovie() {
+        return mFavoriteBean;
     }
 
     public LiveData<TrailersBean> getTrailers() {
@@ -55,7 +63,9 @@ public class DetailsMovieViewModel extends ViewModel {
 
     public List<DetailsInterface> getDetailsData(Context ctx) {
         List<DetailsInterface> data = new ArrayList<>();
-        data.add(mDetailBean);
+        mMovieBean.setFavorite(mFavoriteBean.getValue() != null);
+        data.add(mMovieBean);
+
         if (mTrailers.getValue() != null && !mTrailers.getValue().getTrailerList().isEmpty()) {
             data.add(new HeaderBean(ctx.getString(R.string.trailer_header)));
             data.addAll(mTrailers.getValue().getTrailerList());

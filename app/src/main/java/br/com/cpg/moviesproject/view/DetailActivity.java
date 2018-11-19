@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import br.com.cpg.moviesproject.R;
 import br.com.cpg.moviesproject.controller.DetailsAdapter;
@@ -28,6 +29,7 @@ import br.com.cpg.moviesproject.model.bean.ReviewsBean;
 import br.com.cpg.moviesproject.model.bean.TrailerBean;
 import br.com.cpg.moviesproject.model.bean.TrailersBean;
 import br.com.cpg.moviesproject.model.business.YoutubeBO;
+import br.com.cpg.moviesproject.model.persistence.AppDatabase;
 import br.com.cpg.moviesproject.utils.NetworkUtils;
 import br.com.cpg.moviesproject.view.viewholder.DetailViewHolder;
 import br.com.cpg.moviesproject.view.viewholder.TrailerViewHolder;
@@ -43,7 +45,8 @@ import br.com.cpg.moviesproject.view.viewmodel.DetailsMovieViewModelFactory;
  * Load comments - OK
  * Comments UI - OK
  * Favorite - OK
- * Create database/room
+ * Create database/room - OK
+ * Save favorite - OK
  * Animation
  * Rotation
  * Change share - first trailer - OK
@@ -61,11 +64,14 @@ public class DetailActivity extends AppCompatActivity {
     private ProgressBar mLoading;
 
     private DetailsAdapter mAdapter;
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_MOVIE_DATA)) {
@@ -84,8 +90,20 @@ public class DetailActivity extends AppCompatActivity {
             toSuccessState();
 
             if (NetworkUtils.verifyNetworkConnection(this)) {
-                DetailsMovieViewModelFactory factory = new DetailsMovieViewModelFactory(mMovieData);
+                DetailsMovieViewModelFactory factory = new DetailsMovieViewModelFactory(mDb, mMovieData);
                 final DetailsMovieViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailsMovieViewModel.class);
+
+                viewModel.getMovie().observe(this, new Observer<MovieBean>() {
+                    @Override
+                    public void onChanged(@Nullable MovieBean movieBean) {
+                        viewModel.getMovie().removeObserver(this);
+                        if (movieBean != null) {
+                            mMovieData = movieBean;
+                            mAdapter.setDetailsData(viewModel.getDetailsData(DetailActivity.this));
+                        }
+                    }
+                });
+
                 viewModel.getTrailers().observe(this, new Observer<TrailersBean>() {
                     @Override
                     public void onChanged(@Nullable TrailersBean trailersBean) {
@@ -165,8 +183,20 @@ public class DetailActivity extends AppCompatActivity {
 
                 DetailsInterface item = mAdapter.getItems().get(position);
                 if (item != null) {
-                    MovieBean movie = (MovieBean) item;
+                    final MovieBean movie = (MovieBean) item;
+                    final boolean favorite = movie.isFavorite();
                     movie.setFavorite(!movie.isFavorite());
+                    Executors.newSingleThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (favorite) {
+                                mDb.favoriteDao().deleteFavorite(movie);
+                            } else {
+                                mDb.favoriteDao().insertFavorite(movie);
+                            }
+                        }
+                    });
+
                     mAdapter.notifyItemChanged(position);
                 }
             }
